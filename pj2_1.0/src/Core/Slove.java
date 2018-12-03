@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Slove {
 
-    final private  int INFINITY = 9999;
+    final private int INFINITY = 9999;
     private Station departure, transfer, terminal;
     private Metro metro;
 
