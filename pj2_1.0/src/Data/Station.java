@@ -1,5 +1,6 @@
 package Data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Station {
@@ -12,10 +13,19 @@ public class Station {
 
     Station(String str){
         setKnown(false);
+        setDist(9999);
         init(str);
     }
 
+    void refresh(){
+        setDist(9999);
+        setKnown(false);
+        setPath(null);
+    }
+
     private void init(String str){
+        adjacent = new HashMap<>();
+        line = new HashMap<>();
         String[] strs = str.split(" ");
         name = strs[0];
         for (int i = 1; i < strs.length; i++) {
@@ -25,18 +35,12 @@ public class Station {
         }
     }
 
-    public boolean hasUnkonwn(Metro metro){
-        return false;
-
-    }
-
-
     public String getName() {
         return name;
     }
 
     public boolean isKnown() {
-        return known;
+        return !known;
     }
 
     public void setKnown(boolean known) {
@@ -50,6 +54,7 @@ public class Station {
     public Map<String, String> getLine() {
         return line;
     }
+
     public int getDist() {
         return dist;
     }

@@ -1,95 +1,60 @@
 package Data;
 
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 
-public class Metro implements Serializable {
-    public Station[] stations = new Station[323];
+public class Metro{
+    private Station[] stations = new Station[324];
 
     public Metro(){
         init();
-
     }
 
-    //ä»Excelæ–‡ä»¶è¯»å–æ•°æ®ï¼Œ
+    public void refresh(){
+        for (Station station:stations) {
+            station.refresh();
+        }
+    }
+
+    //´ÓtxtÎÄ¼ş¶ÁÈ¡Êı¾İ£¬²¢Éú³ÉÏàÓ¦Õ¾µã
     private void init(){
-        File file = new File("materials/Timetable.xls");
-        if (file.exists()){
+        File file = new File("materials/stations.txt");
             try{
-                Workbook wb = Workbook.getWorkbook(file);
-                int sheets = wb.getNumberOfSheets();
-                for (int i = 0; i < sheets; i++) {
-                    String
-
-                }
-                String linename
-
-/*
                 FileReader fileReader = new FileReader(file);
                 BufferedReader br = new BufferedReader(fileReader);
                 String lineContent;
                 int i =0;
                 while((lineContent = br.readLine())!=null ){
-                    System.out.println(lineContent);
                     stations[i] = new Station(lineContent);
                     i++;
                 }
-*/
-            }catch (IOException e){
-                System.out.println("fail to read file");
+            } catch (FileNotFoundException e) {
+                System.out.println("cannot found this file");
                 e.printStackTrace();
-            } catch (BiffException e) {
-                System.out.println("not support .xlxs file");
+            } catch (IOException e) {
+                System.out.println("cannot read this file");
                 e.printStackTrace();
             }
-        }
-    }
-
-    //è®¡ç®—ä¸¤ä¸ªæ—¶é—´ä¹‹é—´å·®äº†å¤šå°‘åˆ†é’Ÿ
-    private long getWeight(String str1,String str2){
-        DateFormat df = new SimpleDateFormat("HH:mm");
-        try {
-            Date date1 = df.parse(str1);
-            Date date2 = df.parse(str2);
-            return Math.abs(date1.getTime() - date2.getTime() / (1000 * 60));
-        } catch (Exception e) {
-            System.out.println("Time computing fail ");
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     public Station getStation(String name){
-        Station station = null;
-        for (int i = 0; i < 323; i++) {
+        for (int i = 0; i < 324; i++) {
             if (stations[i].getName().equals(name)){
-                station = stations[i];
-                break;
+                return stations[i];
             }
         }
-        return station;
+        return null;
     }
 
-    //ç›´æ¥è·å–å½“å‰stationçš„æœ€å°unknowné‚»ç«™ç‚¹ï¼Œæ— åˆ™è¿”å›null
-    public Station minimum(Station station){
-        Station s = null;
-        int min = 9999;
-        Map<String, Integer> map = station.getAdjacent();
-        for (String key:map.keySet()) {
-            Station station1 = getStation(key);
-            if (!station1.isKnown()){
-                if (map.get(key)<min){
-                    s =  station1;
-                    min = map.get(key);
+    //Ö±½Ó»ñÈ¡µ±Ç°stationµÄ×îĞ¡unknownÁÚÕ¾µã£¬ÎŞÔò·µ»Ønull
+    public Station minimum(){
+        Station min = null;
+        for (Station station:stations) {
+            if (station.isKnown()){
+                if (min == null || station.getDist() < min.getDist()){
+                    min = station;
                 }
             }
         }
-        return s;
+        return min;
     }
 }
